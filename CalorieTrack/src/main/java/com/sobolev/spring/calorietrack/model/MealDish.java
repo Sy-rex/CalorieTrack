@@ -7,7 +7,8 @@ import lombok.*;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"meal", "dish"})
