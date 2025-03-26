@@ -9,5 +9,6 @@ public interface DishService {
     boolean existsByName(String name);
     DishResponseDTO addDish(DishDTO dishDTO);
     List<DishResponseDTO> getAllDishes();
+    DishResponseDTO getDishById(Long id);
     void deleteDish(Long id);
 }

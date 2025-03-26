@@ -32,6 +32,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO,
                                                       BindingResult bindingResult) {
+        userValidator.validate(userDTO, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest()
                     .body(Map.of("errors", bindingResult.getFieldErrors().stream()

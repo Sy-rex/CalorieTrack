@@ -2,8 +2,11 @@ package com.sobolev.spring.calorietrack.service;
 
 import com.sobolev.spring.calorietrack.dto.DishDTO;
 import com.sobolev.spring.calorietrack.dto.DishResponseDTO;
+import com.sobolev.spring.calorietrack.exception.EntityNotFoundException;
+import com.sobolev.spring.calorietrack.model.Dish;
 import com.sobolev.spring.calorietrack.repository.DishRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,24 +18,47 @@ import java.util.List;
 public class DishServiceImpl implements DishService {
 
     private final DishRepository dishRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public boolean existsByName(String name) {
-        return false;
+        return dishRepository.existsByName(name);
     }
 
     @Override
+    @Transactional
     public DishResponseDTO addDish(DishDTO dishDTO) {
-        return null;
+        return mapToResponseDTO(dishRepository.save(mapToDish(dishDTO)));
     }
 
     @Override
     public List<DishResponseDTO> getAllDishes() {
-        return List.of();
+        return dishRepository.findAll().stream()
+                .map(this::mapToResponseDTO)
+                .toList();
     }
 
     @Override
-    public void deleteDish(Long id) {
+    public DishResponseDTO getDishById(Long id) {
+        Dish dish = dishRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Dish not found"));
+        return mapToResponseDTO(dish);
+    }
 
+    @Override
+    @Transactional
+    public void deleteDish(Long id) {
+        if (!dishRepository.existsById(id)) {
+            throw new EntityNotFoundException("Dish with ID: " + id + " not found");
+        }
+
+        dishRepository.deleteById(id);
+    }
+
+    private Dish mapToDish(DishDTO dishDTO) {
+        return modelMapper.map(dishDTO, Dish.class);
+    }
+
+    private DishResponseDTO mapToResponseDTO(Dish dish) {
+        return modelMapper.map(dish, DishResponseDTO.class);
     }
 }
