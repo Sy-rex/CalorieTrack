@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MealHistoryDTO {
-    private List<Meal> meals;
+    private List<MealDTO> meals;
 }

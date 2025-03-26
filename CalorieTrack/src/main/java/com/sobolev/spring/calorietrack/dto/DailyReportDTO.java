@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DailyReportDTO {
 
-    private List<Meal> meals;
+    private List<MealDTO> meals;
 
     private int dailyCalorieNorm;
 }
