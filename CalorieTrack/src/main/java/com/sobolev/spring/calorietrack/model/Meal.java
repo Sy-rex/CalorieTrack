@@ -27,7 +27,7 @@ public class Meal {
     @Column(name = "meal_time")
     private LocalDateTime mealTime;
 
-    @OneToMany(mappedBy = "meal", orphanRemoval = true)
+    @OneToMany(mappedBy = "meal",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealDish> mealDishes = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

@@ -15,6 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -58,6 +61,8 @@ public class MealServiceImpl implements MealService {
                 mealDish.getMealDishId().setMealId(savedMeal.getId())
         );
 
+        mealRepository.save(savedMeal);
+
         return mapToMealResponseDTO(savedMeal);
     }
 
@@ -79,11 +84,33 @@ public class MealServiceImpl implements MealService {
         mealRepository.deleteById(id);
     }
 
+    @Override
+    public List<Meal> findMealsByUserIdAndDate(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
+        return mealRepository.findByUserIdAndMealTimeBetween(userId, startDate, endDate);
+    }
+
+    @Override
+    public List<Meal> findAllMealsByUserId(Long userId) {
+        return mealRepository.findByUserId(userId);
+    }
+
     private Meal mapToMeal(MealDTO mealDTO) {
         return modelMapper.map(mealDTO, Meal.class);
     }
 
     private MealResponseDTO mapToMealResponseDTO(Meal meal) {
-        return modelMapper.map(meal, MealResponseDTO.class);
+        MealResponseDTO responseDTO = modelMapper.map(meal, MealResponseDTO.class);
+
+        List<MealDishDTO> mealDishDTOs = meal.getMealDishes().stream()
+                .map(mealDish -> {
+                    MealDishDTO dto = new MealDishDTO();
+                    dto.setDishId(mealDish.getDish().getId());
+                    dto.setPortion(mealDish.getPortion());
+                    return dto;
+                })
+                .toList();
+
+        responseDTO.setMealDishes(mealDishDTOs);
+        return responseDTO;
     }
 }
