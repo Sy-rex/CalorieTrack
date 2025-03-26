@@ -24,10 +24,6 @@ public class UserController {
     private final UserService userService;
     private final UserValidator userValidator;
 
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(userValidator);
-    }
 
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO,

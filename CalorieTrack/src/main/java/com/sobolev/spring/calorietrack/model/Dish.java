@@ -25,7 +25,7 @@ public class Dish {
     private String name;
 
     @Positive
-    @Column(name = "calories")
+    @Column(name = "calories", nullable = false)
     private Integer calories;
 
     @DecimalMin("0.0")

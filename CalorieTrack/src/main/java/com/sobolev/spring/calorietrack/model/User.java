@@ -42,6 +42,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "goal",nullable = false)
+    @NotNull
     private Goal goal;
 
     @Column(name = "daily_calories", nullable = false)

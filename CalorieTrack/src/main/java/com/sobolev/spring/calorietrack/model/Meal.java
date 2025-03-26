@@ -1,9 +1,11 @@
 package com.sobolev.spring.calorietrack.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,11 +24,16 @@ public class Meal {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "mealtime")
+    @Column(name = "meal_time")
     private LocalDateTime mealTime;
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MealDish> mealDishes;
+    @OneToMany(mappedBy = "meal", orphanRemoval = true)
+    private List<MealDish> mealDishes = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "meal_type", nullable = false)
+    @NotNull
+    private MealType mealType;
 
     @PrePersist
     public void setMealTimeIfNull() {

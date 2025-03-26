@@ -20,7 +20,7 @@ public class GoalDeserializer extends JsonDeserializer<Goal> {
         try {
             return Goal.valueOf(goalValue);
         } catch (IllegalArgumentException e) {
-            throw new InvalidEnumValueException("Неверное значение для поля 'goal'. Доступные значения: WEIGHT_LOSS, MAINTENANCE, WEIGHT_GAIN.");
+            throw new InvalidEnumValueException("Invalid value for the 'goal' field. Available values: WEIGHT_LOSS, MAINTENANCE, WEIGHT_GAIN");
         }
     }
 }

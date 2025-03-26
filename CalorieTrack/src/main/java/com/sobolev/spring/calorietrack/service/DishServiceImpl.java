@@ -26,6 +26,16 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    public Dish getDishByIdInternal(Long id) {
+        return dishRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Dish with ID: " + id + " not found"));
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return dishRepository.existsById(id);
+    }
+
+    @Override
     @Transactional
     public DishResponseDTO addDish(DishDTO dishDTO) {
         return mapToResponseDTO(dishRepository.save(mapToDish(dishDTO)));
@@ -40,7 +50,8 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public DishResponseDTO getDishById(Long id) {
-        Dish dish = dishRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Dish not found"));
+        Dish dish = dishRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Dish not found"));
         return mapToResponseDTO(dish);
     }
 

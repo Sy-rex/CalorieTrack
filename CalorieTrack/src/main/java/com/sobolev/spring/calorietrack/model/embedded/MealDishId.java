@@ -8,6 +8,8 @@ import java.io.Serializable;
 @Embeddable
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealDishId implements Serializable {

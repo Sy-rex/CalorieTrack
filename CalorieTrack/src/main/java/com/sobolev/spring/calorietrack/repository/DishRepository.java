@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface DishRepository extends JpaRepository<Dish, Long> {
     boolean existsByName(String name);
 
+    boolean existsById(Long id);
+
     Optional<Dish> findById(Long id);
 }
