@@ -4,6 +4,11 @@ import com.sobolev.spring.calorietrack.dto.MealDTO;
 import com.sobolev.spring.calorietrack.dto.MealResponseDTO;
 import com.sobolev.spring.calorietrack.service.MealService;
 import com.sobolev.spring.calorietrack.util.MealValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +24,22 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/meals")
 @RequiredArgsConstructor
+@Tag(name = "Meal Controller", description = "Управление приёмами пищи: добавление, просмотр, удаление")
 public class MealController {
 
     private final MealService mealService;
     private final MealValidator mealValidator;
 
+    @Operation(summary = "Добавление приёма пищи", description = "Позволяет создать новый приём пищи с указанием блюд")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Приём пищи успешно добавлен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка валидации входных данных")
+    })
     @PostMapping
-    public ResponseEntity<?> addMeal(@Valid @RequestBody MealDTO mealDTO,
-                                     BindingResult bindingResult) {
+    public ResponseEntity<?> addMeal(
+            @Valid @RequestBody MealDTO mealDTO,
+            BindingResult bindingResult
+    ) {
         log.info("POST /api/meals - Добавление нового приёма пищи: {}", mealDTO.getMealDishes());
         mealValidator.validate(mealDTO, bindingResult);
 
@@ -41,14 +54,30 @@ public class MealController {
         return ResponseEntity.ok(mealService.addMeal(mealDTO));
     }
 
+    @Operation(summary = "Получение приёма пищи по ID", description = "Возвращает информацию о приёме пищи по ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Приём пищи найден"),
+            @ApiResponse(responseCode = "404", description = "Приём пищи с указанным ID не найден")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<MealResponseDTO> getMeal(@PathVariable Long id) {
+    public ResponseEntity<MealResponseDTO> getMeal(
+            @Parameter(description = "ID приёма пищи", example = "1")
+            @PathVariable Long id
+    ) {
         log.info("GET /api/meals/{} - Поиск приёма пищи по ID", id);
         return ResponseEntity.ok(mealService.getMealById(id));
     }
 
+    @Operation(summary = "Удаление приёма пищи", description = "Удаляет приём пищи по ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Приём пищи успешно удалён"),
+            @ApiResponse(responseCode = "404", description = "Приём пищи с указанным ID не найден")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMeal(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMeal(
+            @Parameter(description = "ID приёма пищи", example = "1")
+            @PathVariable Long id
+    ) {
         log.info("DELETE /api/meals/{} - Удаление приёма пищи", id);
         mealService.deleteMeal(id);
         return ResponseEntity.noContent().build();
