@@ -1,15 +1,13 @@
-FROM maven:3.9.6-eclipse-temurin-17 AS builder
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY . .
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package
 
-RUN mvn clean package -DskipTests
-
-
-FROM eclipse-temurin:17-jdk AS runner
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
-COPY --from=builder /app/target/*.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
-# Запуск приложения
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app.jar"]
